@@ -13,6 +13,7 @@ Role Variables
 --------------
 
 `sudoers_dir_path`: Path to the sudoers-files (/etc/sudoers.d/)
+
 `sudoers_{host,group,all}`: Array of sudoers-definitions
 
     sudoers_{host,group,all}:
