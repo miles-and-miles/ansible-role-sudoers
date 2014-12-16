@@ -1,0 +1,5 @@
+Cmnd_Alias {{ item.cmd_name }} = {{ (',').join(item.cmd_list) }}
+
+{% for user in item.cmd_users %}
+{{ user }}  ALL = NOPASSWD: {{ item.cmd_name }}
+{% endfor %}

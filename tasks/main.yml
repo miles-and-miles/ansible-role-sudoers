@@ -1,0 +1,31 @@
+---
+# tasks file for sudoers
+
+- name: create sudoers-file in /etc/sudoers.d per entry in array
+  template:
+    src: "sudoers.j2"
+    dest: "{{ sudoers_dir_path }}{{ item.cmd_name }}"
+    owner: "root"
+    group: "root"
+    mode: "0640"
+    validate: visudo -cf %s
+  with_flattened:
+    - sudoers_all
+    - sudoers_group
+    - sudoers_host
+  when:
+    file_state == "present"
+    or file_state == "latest"
+    and item.cmd_name is defined
+    and item.cmd_list is defined
+    and item.cmd_users is defined
+- name: remove sudoers-file when state absent
+  file:
+    dest: "{{ sudoers_dir_path }}{{ item.cmd_name }}"
+    state: "{{ file_state }}"
+  with_flattened:
+    - sudoers_all
+    - sudoers_group
+    - sudoers_host
+  when:
+    file_state == "absent"
