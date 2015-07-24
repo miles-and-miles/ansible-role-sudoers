@@ -2,30 +2,33 @@
 # tasks file for sudoers
 
 - name: create sudoers-file in /etc/sudoers.d per entry in array
+  tags: sudo
   template:
     src: "sudoers.j2"
     dest: "{{ sudoers_dir_path }}{{ item.cmd_name }}"
     owner: "root"
     group: "root"
-    mode: "0640"
+    mode: "0440"
     validate: visudo -cf %s
   with_flattened:
     - sudoers_all
     - sudoers_group
     - sudoers_host
   when:
-    file_state == "present"
-    or file_state == "latest"
+    ( item.state is not defined 
+      or item.state != "absent")
     and item.cmd_name is defined
     and item.cmd_list is defined
     and item.cmd_users is defined
 - name: remove sudoers-file when state absent
+  tags: sudo
   file:
     dest: "{{ sudoers_dir_path }}{{ item.cmd_name }}"
-    state: "{{ file_state }}"
+    state: "{{ item.state }}"
   with_flattened:
     - sudoers_all
     - sudoers_group
     - sudoers_host
   when:
-    file_state == "absent"
+    item.state is defined
+    and item.state == "absent"
