@@ -15,7 +15,7 @@
     - sudoers_group
     - sudoers_host
   when:
-    ( item.state is not defined 
+    ( item.state is not defined
       or item.state != "absent")
     and item.cmd_name is defined
     and item.cmd_list is defined
